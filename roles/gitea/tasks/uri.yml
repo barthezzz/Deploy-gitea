@@ -44,7 +44,7 @@
 
  - name: Add org John_Doe
    uri:
-     url: http://localhost:3000/api/v1/teams/"{{json_response.json.id}}"/members/John_Doe
+     url: http://localhost:3000/api/v1/teams/{{json_response.json.id}}/members/John_Doe
      method: PUT
      user: test
      password: 123456
