@@ -1,0 +1,3 @@
+get_url: "https://dl.gitea.io/gitea/1.5.1/gitea-1.5.1-linux-amd64"
+
+system_dir: /etc/systemd/system

@@ -1,0 +1,47 @@
+ - name: Install PostgreSQL
+   yum: pkg={{item}} state=present
+   with_items:
+     - postgresql-server
+     - postgresql-contrib
+     - python-psycopg2
+
+ - name: Init database
+   command: service postgresql initdb
+            creates=/var/lib/pgsql/data/postgresql.conf
+   
+ - name: Enable systemctl
+   service: name=postgresql
+            enabled=yes
+            state=started
+
+ - name: Create db
+   postgresql_db: name={{dbname}}
+   become: yes
+   become_user: postgres
+
+ - name: User access
+   postgresql_user: db={{dbname}} name={{dbuser}} password={{dbpassword}} priv=ALL
+   become: yes
+   become_user: postgres
+
+ - name: Does not have unnecessary privilege
+   postgresql_user: name={{dbuser}} role_attr_flags=NOSUPERUSER,NOCREATEDB
+   become: yes
+   become_user: postgres
+
+ - name: Can access the database
+   postgresql_privs: db={{dbname}} role=PUBLIC type=database priv=ALL state=absent
+   become: yes
+   become_user: postgres
+
+ - name: Copy pg_hba
+   copy:
+     src: "{{item}}"
+     dest: /var/lib/pgsql/data
+     owner: postgres
+     group: postgres
+   with_items:
+     - pg_hba.conf
+
+ - name: Restart postgre
+   service: name=postgresql state=restarted

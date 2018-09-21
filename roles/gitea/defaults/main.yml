@@ -1,0 +1,7 @@
+instpath: /opt/gitea
+home: /home/gitea
+
+gitea_user: John Doe
+gitea_user2: Mary Smith
+email_user: jdoe@example.com
+email_user2: msmith@example.com

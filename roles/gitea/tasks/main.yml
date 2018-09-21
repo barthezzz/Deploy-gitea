@@ -1,0 +1,55 @@
+ - name: Create folder
+   file:
+     path: "{{instpath}}"
+     state: directory
+     mode: 0755
+
+ - name: Get gitea
+   get_url:
+     url: "{{get_url}}"
+     dest: "{{instpath}}"
+     mode: 0755
+
+ - name: Create gitea group
+   group:
+     name: gitea
+     state: present
+
+ - name: Create gitea user
+   user:
+     name: gitea
+     group: gitea
+     home: "{{home}}"
+
+ - name: Owner directory
+   become: yes
+   file:
+     path: "{{instpath}}"
+     owner: gitea
+     group: gitea
+     recurse: yes
+
+ - name: Add sudo service
+   lineinfile:
+       dest: /etc/sudoers
+       insertafter: '^root.*ALL.*ALL.*ALL'
+       regexp: '^gitea'
+       line: "gitea\tALL=(ALL)\tNOPASSWD:/bin/systemctl * gitea.service"
+       validate: 'visudo -cf %s'
+
+ - name: Create service
+   template:
+     src: gitea.service
+     dest: "{{system_dir}}"
+
+ - name: Start web service gitea
+   service:
+     name: gitea
+     state: started
+     enabled: yes
+
+ - name: Create admin user
+   import_tasks: tasks/create-user.yml
+
+ - name: Create users
+   import_tasks: tasks/uri.yml

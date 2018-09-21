@@ -1,0 +1,74 @@
+ - name: Create org example.com
+   uri:
+     url: http://localhost:3000/api/v1/admin/users/test/orgs
+     method: POST
+     user: test
+     password: 123456
+     body: {"username": "example.com"}
+     force_basic_auth: yes
+     status_code: 200, 201, 422
+     body_format: json
+
+ - name: Create repo
+   uri:
+     url: http://localhost:3000/api/v1/org/example.com/repos
+     method: POST
+     user: test
+     password: 123456
+     body: {"description": "foobar","name": "foobar"}
+     force_basic_auth: yes
+     status_code: 200, 201, 422
+     body_format: json
+
+ - name: Get team id response
+   uri:
+     url: http://localhost:3000/api/v1/orgs/example.com/teams
+     method: GET
+     user: test
+     password: 123456
+     force_basic_auth: yes
+     status_code: 200, 201, 422
+     body_format: json
+     register: json_response
+  
+ - name: Create user John_Doe
+   uri:
+     url: http://localhost:3000/api/v1/admin/users
+     method: POST
+     user: test
+     password: 123456
+     body: {"username": "John_Doe", "email": "jdoe@example.com", "password": "test123", "full_name": "John Doe"}
+     force_basic_auth: yes
+     status_code: 200, 201, 422
+     body_format: json
+
+ - name: Add org John_Doe
+   uri:
+     url: http://localhost:3000/api/v1/teams/"{{json_response.json.id}}"/members/John_Doe
+     method: PUT
+     user: test
+     password: 123456
+     force_basic_auth: yes
+     status_code: 200, 201, 204, 422
+     body_format: json
+
+ - name: Create user Mary Smith
+   uri:
+     url: http://localhost:3000/api/v1/admin/users
+     method: POST
+     user: test
+     password: 123456
+     body: {"username": "Mary_Smith", "email": "msmith@example.com", "password": "test123", "full_name": "Mary Smith"}
+     force_basic_auth: yes
+     status_code: 200, 201, 422
+     body_format: json
+
+ - name: Add org Mary Smith
+   uri:
+     url: http://localhost:3000/api/v1/teams/2/members/Mary_Smith
+     method: PUT
+     user: test
+     password: 123456
+     force_basic_auth: yes
+     status_code: 200, 201, 204, 422
+     body_format: json

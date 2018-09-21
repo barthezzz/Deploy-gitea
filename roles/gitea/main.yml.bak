@@ -1,0 +1,5 @@
+- name: main playbook
+  hosts: local
+  roles:
+     - postgresql
+     - gitea
