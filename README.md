@@ -1,2 +1,2 @@
 # Deploy-gitea
-My fisrst project on hithub :)))
+My fisrst project on github :)))
